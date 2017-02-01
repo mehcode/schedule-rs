@@ -1,7 +1,7 @@
 # schedule-rs
+[![Crates.io](https://img.shields.io/schedule/d/config.svg)](https://crates.io/crates/schedule)
+[![Docs.rs](https://docs.rs/schedule/badge.svg)](https://docs.rs/schedule)
 > An in-process scheduler for periodic jobs. Schedule lets you run Rust functions on a cron-like schedule.
-
-[Documentation](https://docs.rs/schedule)
 
 ## Install
 
