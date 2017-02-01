@@ -46,6 +46,6 @@ fn main() {
 
 ## License
 
-config-rs is primarily distributed under the terms of both the MIT license and the Apache License (Version 2.0).
+Schedule is primarily distributed under the terms of both the MIT license and the Apache License (Version 2.0).
 
 See LICENSE-APACHE and LICENSE-MIT for details.
