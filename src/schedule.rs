@@ -201,8 +201,6 @@ impl FromStr for Box<Schedule> {
         // TODO: Validate input
         // s.validate();
 
-        println!("{:?}", s);
-
         Ok(Box::new(s))
     }
 }
