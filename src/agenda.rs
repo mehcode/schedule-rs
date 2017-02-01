@@ -8,6 +8,10 @@ pub struct Agenda<'a> {
 }
 
 impl<'a> Agenda<'a> {
+    pub fn new() -> Agenda<'a> {
+        Default::default()
+    }
+
     pub fn add(&mut self, job: Job<'a>) {
         // Add new job
         self.jobs.push(job);
