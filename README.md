@@ -1,6 +1,8 @@
 # schedule-rs
 > An in-process scheduler for periodic jobs. Schedule lets you run Rust functions on a cron-like schedule.
 
+[Documentation](https://docs.rs/schedule)
+
 ## Install
 
 ```toml
