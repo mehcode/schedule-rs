@@ -13,7 +13,7 @@ pub struct Job<'a> {
     pub next_run_at: Option<DateTime<UTC>>,
 
     /// Function to run
-    function: Box<(FnMut() -> ()) + 'a>,
+    function: Box<FnMut() + 'a>,
 }
 
 impl<'a> Job<'a> {
