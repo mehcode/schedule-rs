@@ -1,36 +1,47 @@
+use schedule::{Schedule, TryIntoSchedule};
 use chrono::{DateTime, UTC};
+use error::*;
 
-use schedule::Schedule;
-
-pub struct Job<'a> {
-    /// Schedule used to determine the next run
-    schedule: Box<Schedule + 'a>,
-
-    /// DateTime of the last run
-    last_run_at: Option<DateTime<UTC>>,
-
-    /// DateTime of the next run
+pub struct Job {
+    pub function: Box<FnMut() + Send + Sync>,
+    pub name: Option<String>,
+    pub schedule: Option<Schedule>,
+    pub remaining: Option<usize>,
     pub next_run_at: Option<DateTime<UTC>>,
-
-    /// Function to run
-    function: Box<FnMut() + 'a>,
+    pub last_run_at: Option<DateTime<UTC>>,
+    pub is_active: bool,
 }
 
-impl<'a> Job<'a> {
-    pub fn new<T>(function: T, schedule: Box<Schedule>) -> Job<'a>
-        where T: 'a,
-              T: FnMut() -> ()
+impl Job {
+    pub fn new<F: FnMut() + Send + Sync>(function: F) -> Self
+        where F: 'static
     {
         Job {
-            next_run_at: schedule.next(None),
-            last_run_at: None,
-            schedule: schedule,
             function: Box::new(function),
+            name: None,
+            remaining: None,
+            schedule: None,
+            next_run_at: None,
+            last_run_at: None,
+            is_active: true,
         }
     }
 
-    /// Return `true` if the job should be run now.
-    pub fn is_ready(&self) -> bool {
+    /// Returns true if this job is pending execution.
+    pub fn is_pending(&self) -> bool {
+        // Check if paused
+        if !self.is_active {
+            return false;
+        }
+
+        // Check if we have a limit
+        if let Some(rem) = self.remaining {
+            if rem == 0 {
+                return false;
+            }
+        }
+
+        // Check if NOW is on or after next_run_at
         if let Some(next_run_at) = self.next_run_at {
             UTC::now() >= next_run_at
         } else {
@@ -38,12 +49,46 @@ impl<'a> Job<'a> {
         }
     }
 
-    /// Run the job immediately and reschedule it.
-    pub fn run(&mut self) {
-        self.last_run_at = Some(UTC::now());
+    /// Re-schedule the job.
+    pub fn schedule<S>(&mut self, s: S) -> Result<()>
+        where S: TryIntoSchedule
+    {
+        // Parse a new schedule
+        self.schedule = Some(s.try_into_schedule()?);
 
+        // Reset the remaining count
+        self.remaining = None;
+
+        // Determine the next time it should run
+        self.next_run_at = if let Some(ref schedule) = self.schedule {
+            schedule.next(self.last_run_at)
+        } else {
+            None
+        };
+
+        Ok(())
+    }
+
+    /// Run the job immediately and re-schedule it.
+    pub fn run(&mut self) {
+        // Execute the job function
         (self.function)();
 
-        self.next_run_at = self.schedule.next(self.last_run_at);
+        // Decrement remaining if set
+        if let Some(ref mut rem) = self.remaining {
+            if *rem > 0 {
+                *rem -= 1;
+            }
+        }
+
+        // Save the last time this ran
+        self.last_run_at = Some(UTC::now());
+
+        // Determine the next time it should run
+        self.next_run_at = if let Some(ref schedule) = self.schedule {
+            schedule.next(self.last_run_at)
+        } else {
+            None
+        };
     }
 }

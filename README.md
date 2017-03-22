@@ -1,13 +1,15 @@
 # schedule-rs
-[![Crates.io](https://img.shields.io/schedule/d/config.svg)](https://crates.io/crates/schedule)
+![Rust](https://img.shields.io/badge/rust-nightly-red.svg)
+[![Crates.io](https://img.shields.io/crates/d/schedule.svg)](https://crates.io/crates/schedule)
 [![Docs.rs](https://docs.rs/schedule/badge.svg)](https://docs.rs/schedule)
+[![IRC](https://img.shields.io/badge/chat-%23schedule-yellow.svg)](https://kiwiirc.com/client/irc.mozilla.org/#schedule)
 > An in-process scheduler for periodic jobs. Schedule lets you run Rust functions on a cron-like schedule.
 
 ## Install
 
 ```toml
 [dependencies]
-schedule = "0.1"
+schedule = { git = "https://github.com/mehcode/schedule-rs" }
 ```
 
 ## Usage
@@ -16,26 +18,26 @@ schedule = "0.1"
 extern crate schedule;
 extern crate chrono;
 
-use schedule::{Agenda, Job};
+use schedule::Agenda;
 use chrono::UTC;
 
 fn main() {
     let mut a = Agenda::new();
 
     // Run every second
-    a.add(Job::new(|| {
+    a.add(|| {
         println!("at second     :: {}", UTC::now());
-    }, "* * * * * *".parse().unwrap()));
+    }, "* * * * * *").unwrap();
 
     // Run every minute
-    a.add(Job::new(|| {
+    a.add(|| {
         println!("at minute     :: {}", UTC::now());
-    }, "* * * * *".parse().unwrap()));
+    }, "0 * * * * *").unwrap();
 
     // Run every hour
-    a.add(Job::new(|| {
+    a.add(|| {
         println!("at hour       :: {}", UTC::now());
-    }, "0 * * * *".parse().unwrap()));
+    }, "0 0 * * * *").unwrap();
 
     // Check and run pending jobs in agenda every 500 milliseconds
     loop {

@@ -1,6 +1,6 @@
 [package]
 name = "schedule"
-version = "0.1.0"
+version = "0.2.0-pre"
 description = "An in-process scheduler for periodic jobs. Schedule lets you run Rust functions on a cron-like schedule."
 authors = ["Ryan Leckey <leckey.ryan@gmail.com>"]
 homepage = "https://github.com/mehcode/schedule-rs"
@@ -11,5 +11,7 @@ license = "MIT/Apache-2.0"
 keywords = ["schedule", "cron", "job", "periodic"]
 
 [dependencies]
-chrono = "0.2"
-nom = "^2.1"
+cron = { git = "https://github.com/mehcode/cron", branch = "error-chain" }
+error-chain = "0.10.0"
+chrono = "0.3.0"
+time = "0.1"
