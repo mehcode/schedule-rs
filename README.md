@@ -27,17 +27,17 @@ fn main() {
     // Run every second
     a.add(|| {
         println!("at second     :: {}", UTC::now());
-    }, "* * * * * *").unwrap();
+    }).schedule("* * * * * *").unwrap();
 
     // Run every minute
     a.add(|| {
         println!("at minute     :: {}", UTC::now());
-    }, "0 * * * * *").unwrap();
+    }).schedule("0 * * * * *").unwrap();
 
     // Run every hour
     a.add(|| {
         println!("at hour       :: {}", UTC::now());
-    }, "0 0 * * * *").unwrap();
+    }).schedule("0 0 * * * *").unwrap();
 
     // Check and run pending jobs in agenda every 500 milliseconds
     loop {
