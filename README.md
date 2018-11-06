@@ -2,7 +2,6 @@
 ![Rust](https://img.shields.io/badge/rust-nightly-red.svg)
 [![Crates.io](https://img.shields.io/crates/d/schedule.svg)](https://crates.io/crates/schedule)
 [![Docs.rs](https://docs.rs/schedule/badge.svg)](https://docs.rs/schedule)
-[![IRC](https://img.shields.io/badge/chat-%23schedule-yellow.svg)](https://kiwiirc.com/client/irc.mozilla.org/#schedule)
 > An in-process scheduler for periodic jobs. Schedule lets you run Rust functions on a cron-like schedule.
 
 ## Install
